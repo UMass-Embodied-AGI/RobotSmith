@@ -1,0 +1,19 @@
+{
+  "name": "one_gripper_knife",
+  "parts": [
+    {
+      "geom": "cylinder",
+      "prompt": "",
+      "parameters": [0.01, 0.10],
+      "is_graspable": true
+    },
+    {
+      "geom": "cube",
+      "prompt": "",
+      "parameters": [0.001, 0.020, 0.100],
+      "is_graspable": false
+    }
+  ],
+  "assemble_func": "def assemble(parts: list[dict]):\n    import trimesh\n\n    # Part 0: handle (cylinder)\n    # primitive('cylinder', [radius, height]) produces a cylinder centered at origin,\n    # aligned along +Z with height spanning [-height/2, +height/2].\n    handle = primitive('cylinder', parts[0]['parameters'])  # [0.01, 0.10]\n    # Move handle so its bottom sits on z=0 (table surface).\n    handle_translation = (0.0, 0.0, parts[0]['parameters'][1] / 2)  # z = 0.10 / 2 = 0.05\n    move(handle, handle_translation)\n\n    # Part 1: blade (thin rectangular prism aligned along Z)\n    # primitive('cube', [sx, sy, sz]) is centered at origin spanning [-sx/2, +sx/2], etc.\n    blade = primitive('cube', parts[1]['parameters'])  # [0.001, 0.020, 0.100]\n    # Move blade so:\n    # - its bottom face sits at z=0,\n    # - it lies flush against the handle’s side (handle radius=0.01).\n    # Cube half-thickness in X = 0.001 / 2 = 0.0005, so center X at 0.01 + 0.0005 = 0.0105.\n    blade_translation = (\n        parts[0]['parameters'][0] + parts[1]['parameters'][0] / 2,  # x = 0.01 + 0.0005 = 0.0105\n        0.0,\n        parts[1]['parameters'][2] / 2  # z = 0.100 / 2 = 0.05\n    )\n    move(blade, blade_translation)\n\n    # Combine handle and blade into one mesh\n    combined = trimesh.util.concatenate([handle, blade])\n    combined.export('one_gripper_knife.obj')\n    return ['one_gripper_knife.obj']\n",
+  "placement_func": "def placement():\n    # Place the tool so its blade plane cuts through the dough's center\n    # Dough occupies x in [0.30, 0.42], center x=0.36.\n    # Blade’s inner face is at x = 0.010 (half-thickness=0.0005 offset from origin x=0.0105 - 0.0005).\n    # To align that inner face at x=0.36, set tool origin x = 0.36 - 0.010 = 0.35.\n    self.tool = scene.add_entity(\n        gs.Morph.Mesh(\n            filename='one_gripper_knife.obj',\n            pos=(0.35, 0.0, 0.0),\n            euler=(0, 0, 0),\n            scale=(1, 1, 1)\n        )\n    )\n"
+}

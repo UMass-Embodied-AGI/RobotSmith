@@ -1,0 +1,19 @@
+{
+  "name": "knife",
+  "parts": [
+    {
+      "geom": "cube",
+      "prompt": "",
+      "parameters": [0.15, 0.005, 0.01],
+      "is_graspable": false
+    },
+    {
+      "geom": "cylinder",
+      "prompt": "",
+      "parameters": [0.01, 0.1],
+      "is_graspable": true
+    }
+  ],
+  "assemble_func": "def assemble(parts: list[dict]):\n    import trimesh\nn    # Create blade (thin rectangular prism)\n    blade = primitive('cube', parts[0]['parameters'])  # [0.15, 0.005, 0.01]\n    # Center blade so its base is at z=0\n    # primitive('cube') is centered at origin; move so bottom face sits on z=0\n    blade_translation = (parts[0]['parameters'][0] / 2, 0.0, parts[0]['parameters'][2] / 2)\n    move(blade, blade_translation)\n\n    # Create handle (cylinder) and orient it along the y-axis\n    handle = primitive('cylinder', parts[1]['parameters'])  # [0.01, 0.1]\n    # Rotate handle: default axis=z; rotate -90° around x so axis → y\n    handle.apply_translation((0, 0, 0))  # ensure centered before rotate\n    handle.apply_rotation(trimesh.transformations.rotation_matrix(\n        angle=-1.5708,  # -90° in radians\n        direction=[1, 0, 0],\n        point=[0, 0, 0]\n    ))\n    # Move handle so its base sits flush on top of blade at x=0\n    # After rotation, cylinder length is along y from -0.05 to +0.05; thickness in z is radius=0.01\n    # We want the bottom of the handle (z) to be at blade top: blade thickness=0.01\n    handle_translation = (0.0, 0.0, parts[0]['parameters'][2] + parts[1]['parameters'][0])  # z = 0.01 + 0.01\n    move(handle, handle_translation)\n\n    # Combine blade and handle into one mesh\n    combined = trimesh.util.concatenate([blade, handle])\n    # Export combined mesh\n    combined.export('knife.obj')\n    return ['knife.obj']\n",
+  "placement_func": "def placement():\n    # Place the knife so that its blade cuts through the center of the dough\n    # Dough spans x in [0.30, 0.42], so center at x=0.36; y=0; z=0 (knife base at table)\n    self.tool = scene.add_entity(\n        gs.Morph.Mesh(\n            filename='knife.obj',\n            pos=(0.36, 0.0, 0.0),\n            euler=(0, 0, 0),\n            scale=(1, 1, 1)\n        )\n    )\n"
+}

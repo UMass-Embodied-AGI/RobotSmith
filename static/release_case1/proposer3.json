@@ -1,0 +1,19 @@
+{
+  "name": "one_gripper_knife_v2",
+  "parts": [
+    {
+      "geom": "cylinder",
+      "prompt": "",
+      "parameters": [0.01, 0.10],
+      "is_graspable": true
+    },
+    {
+      "geom": "cube",
+      "prompt": "",
+      "parameters": [0.0005, 0.020, 0.120],
+      "is_graspable": false
+    }
+  ],
+  "assemble_func": "def assemble(parts: list[dict]):\n    import trimesh\n\n    # Part 0: cylinder handle\n    handle = primitive('cylinder', parts[0]['parameters'])  # [radius=0.01, height=0.10]\n    # Move handle so its bottom sits on z=0\n    handle_translation = (0.0, 0.0, parts[0]['parameters'][1] / 2)  # z = 0.10/2 = 0.05\n    move(handle, handle_translation)\n\n    # Part 1: thin cube blade\n    blade = primitive('cube', parts[1]['parameters'])  # [sx=0.0005, sy=0.020, sz=0.120]\n    # Rotate blade around Y-axis by 15° to produce slicing angle\n    angle = 15 * (3.14159265 / 180.0)  # 15 degrees in radians\n    rot_mat = trimesh.transformations.rotation_matrix(angle, [0, 1, 0], [0, 0, 0])\n    blade.apply_transform(rot_mat)\n    \n    # Compute approximate translation so bottom of blade sits on z=0\n    # Half of blade length along its local Z before rotation: 0.120/2 = 0.06\n    # After rotation, bottom z-offset = -0.06 * cos(15°)\n    z_offset = 0.06 * abs(trimesh.transformations.rotation_matrix(angle, [0,1,0]).dot([0,0,-1,0])[2])\n    # Approximate cos(15°) = 0.9659\n    z_translation = 0.06 * 0.9659258  # ≈ 0.05796\n    \n    # Compute approximate X translation so blade glances the handle side\n    # Blade half-length along its local Z projects onto X by 0.06 * sin(15°) ≈ 0.01553\n    x_projection = 0.06 * 0.2588190  # ≈ 0.015528\n    # Place blade so its inner edge is flush at handle radius = 0.01\n    x_translation = parts[0]['parameters'][0] + x_projection  # 0.01 + 0.015528 ≈ 0.025528\n    \n    blade_translation = (x_translation, 0.0, z_translation)\n    move(blade, blade_translation)\n\n    # Combine handle and blade into one mesh\n    combined = trimesh.util.concatenate([handle, blade])\n    combined.export('one_gripper_knife_v2.obj')\n    return ['one_gripper_knife_v2.obj']\n",
+  "placement_func": "def placement():\n    # Place the angled knife so its blade cuts through dough center x=0.36\n    # The blade’s inner edge (closest point on blade to origin) lies at x ≈ 0.010 (handle radius)\n    # After rotation, we positioned blade center at x = 0.01 + 0.015528 = 0.025528\n    # So blade’s inner edge is at x_center - (blade half-length * cos(15°)) along X direction\n    # Half-length of blade = 0.06, projected onto X = 0.06 * 0.2588 ≈ 0.015528;\n    # inner_edge_x_center = 0.025528 - 0.015528 = 0.01\n    # To align that inner edge at scene x=0.36, set tool origin x_offset = 0.36 - 0.01 = 0.35\n    self.tool = scene.add_entity(\n        gs.Morph.Mesh(\n            filename='one_gripper_knife_v2.obj',\n            pos=(0.35, 0.0, 0.0),\n            euler=(0, 0, 0),\n            scale=(1, 1, 1)\n        )\n    )\n"
+}

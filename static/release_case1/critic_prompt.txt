@@ -1,0 +1,14 @@
+Now you have a robotic task: 
+
+On the table, there is a robot arm with a parallel gripper, a dough. The task goal is to cut the dough into two parts and keep the two parts with a distance more than 0.2. For a more detailed scene setup, here is a code:
+
+```code
+self.dough = self.scene.add_entity(morph=gs.morphs.Box(upper=(0.42, 0.015, 0.03), lower=(0.30, -0.015, 0.00)))
+```
+
+Here are 5 multi-view figures of a tool designed for the task. Do these look good? If so, reply DONE; if not, reply MODIFY then give modification suggestions.
+
+Here are some important aspects for you to examine if the tool looks good:
+1. A good tool should be easy to grasp.
+2. A good tool should be in good shape, and each part looks connected.
+3. A good tool should be able to be placed on the ground stably.

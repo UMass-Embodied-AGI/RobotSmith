@@ -1,0 +1,14 @@
+✅ Graspability: The rod shape is good for grasping with a parallel gripper – it provides a consistent gripping surface.
+
+❌ Flat bar orientation: The perpendicular orientation of the flat bar might make the tool awkward to manipulate in a single-gripper setting. When grasping the rod, the bar could interfere with movement because it sticks out, especially if the tool needs to rotate or adjust during the cut.
+
+✅ Tool shape and stability: It still looks stable for resting on a flat surface.
+
+MODIFY
+
+To better suit one-gripper manipulation:
+
+Consider reducing the width of the flat bar or angling it differently (e.g., so it’s more in line with the cylindrical handle).
+
+Alternatively, integrate the flat bar as a blade aligned along the cylinder’s long axis. This way, the tool remains easy to grasp and maneuver with the gripper, while still being able to cut or push dough pieces apart.
+

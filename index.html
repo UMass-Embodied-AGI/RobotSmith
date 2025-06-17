@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- Meta tags for social media banners, these should be filled in appropriatly as they are your "business card" -->
+  <!-- Replace the content tag with appropriate information -->
+  <meta name="description" content="DESCRIPTION META TAG">
+  <meta property="og:title" content="SOCIAL MEDIA TITLE TAG"/>
+  <meta property="og:description" content="SOCIAL MEDIA DESCRIPTION TAG TAG"/>
+  <meta property="og:url" content="URL OF THE WEBSITE"/>
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X630-->
+  <meta property="og:image" content="static/image/your_banner_image.png" />
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+
+
+  <meta name="twitter:title" content="TWITTER BANNER TITLE META TAG">
+  <meta name="twitter:description" content="TWITTER BANNER DESCRIPTION META TAG">
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X600-->
+  <meta name="twitter:image" content="static/images/your_twitter_banner_image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Keywords for your paper to be indexed by-->
+  <meta name="keywords" content="KEYWORDS SHOULD BE PLACED HERE">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <title>RobotSmith: Generative Robotic Tool Design for Acquisition of Complex Manipulation Skills</title>
+  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+  rel="stylesheet">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.153.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+
+
+<body>
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">RobotSmith: Generative Robotic Tool Design<br>for Acquisition of Complex Manipulation Skills</h1>
+            <div class="is-size-5 publication-authors">
+              <!-- Paper authors -->
+              <span class="author-block">
+                <a href="FIRST AUTHOR PERSONAL LINK" target="_blank">Chunru Lin</a><sup>*</sup>,</span>
+              <span class="author-block">
+                <a href="SECOND AUTHOR PERSONAL LINK" target="_blank">Haotian Yuan</a><sup>*</sup>,</span>
+              <span class="author-block">
+                <a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Yian Wang</a><sup>*</sup>,</span>
+              </span>
+              <span class="author-block">
+                <a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Xiaowen Qiu</a>,</span>
+              </span>
+              <span class="author-block">
+                <a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Tsun-Hsuan Wang</a>,</span>
+              </span>
+              <span class="author-block">
+                <a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Minghao Guo</a>,</span>
+              </span>
+              <span class="author-block">
+                <a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Bohan Wang</a>,</span>
+              </span>
+              <span class="author-block">
+                <a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Yashraj Narang</a>,</span>
+              </span>
+              <span class="author-block">
+                <a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Dieter Fox</a>,</span>
+              </span>
+              <span class="author-block">
+                <a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Chuang Gan</a>,</span>
+              </span>
+            </div>
+
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- PDF Link. -->
+                <span class="link-block">
+                  <a href="https://robosmith1.github.io"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="https://robosmith1.github.io"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                        <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="https://robosmith1.github.io"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                        <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                    </a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 1.Teaser. -->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <img src="./static/images/2.png" alt="替代文本" />
+    </div>
+  </div>
+</section>
+<!--/ Teaser. -->
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- 2.Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Endowing robots with tool design abilities is critical for enabling them to solve complex manipulation tasks that would otherwise be intractable. 
+            While recent generative frameworks can automatically synthesize task settings, such as 3D scenes and reward functions, they have not yet addressed 
+            the challenge of tool-use scenarios. Simply retrieving human-designed tools might not be ideal since many tools (e.g., a rolling pin) are difficult 
+            for robotic manipulators to handle. Furthermore, existing tool design approaches either rely on predefined templates with limited parameter tuning 
+            or apply generic 3D generation methods that are not optimized for tool creation.To address these limitations, we propose <B>RobotSmith</B>, an 
+            automated pipeline that leverages the implicit physical knowledge embedded in vision-language models (VLMs) alongside the more accurate physics provided 
+            by physics simulations to design and use tools for robotic manipulation. Our system (1) iteratively proposes tool designs using collaborative VLM agents, 
+            (2) generates low-level robot trajectories for tool use, and (3) jointly optimizes tool geometry and usage for task performance. We evaluate our approach 
+            across a wide range of manipulation tasks involving rigid, deformable, and fluid objects. Experiments show that our method consistently outperforms strong 
+            baselines in terms of both task success rate and overall performance. Notably, our approach achieves a 50.0% average success rate, significantly surpassing 
+            other baselines such as 3D generation (21.4%) and tool retrieval (11.1%). Finally, we deploy our system in real-world settings, demonstrating that the 
+            generated tools and their usage plans transfer effectively to physical execution, validating the practicality and generalization capabilities of our approach.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container is-max-desktop">
+  <h2 class="title is-3 has-text-centered">Tool Generation Procedure</h2>
+
+  <div class="columns is-centered">
+    <!-- 左侧：Designer 模型展示 -->
+    <div class="column is-half">
+      <h3 class="title is-5 has-text-centered">Designer</h3>
+      <div id="obj-viewer-1" style="width: 100%; height: 400px;"></div>
+    </div>
+
+    <!-- 右侧：Critic 文本展示 -->
+    <div class="column is-half">
+      <h3 class="title is-5 has-text-centered">Critic</h3>
+      <div id="critic-text"
+           style="width: 100%; height: 400px; padding: 12px; font-size: 16px; background-color: #f5f5f5; border: 1px solid #ccc; overflow-y: auto;">
+        Placeholder for feedback or critic analysis...
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.step-selector {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.step-selector button {
+  border-radius: 0;
+  border: 1px solid #3273dc;
+  background-color: white;
+  color: #3273dc;
+  padding: 0.75rem 1.5rem;
+  font-weight: bold;
+  transition: all 0.2s ease-in-out;
+}
+
+.step-selector button:first-child {
+  border-radius: 6px 0 0 6px;
+}
+.step-selector button:last-child {
+  border-radius: 0 6px 6px 0;
+}
+
+.step-selector button.active {
+  background-color: #3273dc;
+  color: white;
+}
+</style>
+
+<!-- Step selector -->
+<div class="step-selector">
+  <button onclick="selectStep(1)" id="step-btn-1" class="active">Step 1</button>
+  <button onclick="selectStep(2)" id="step-btn-2">Step 2</button>
+  <button onclick="selectStep(3)" id="step-btn-3">Step 3</button>
+</div>
+
+<!-- 3.Task Gallery. -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="hero-body has-text-centered">
+      <h2 class="title is-3">Task Gallery</h2>
+
+      <!-- 3x3 Grid -->
+      <div class="columns is-centered">
+        <div class="column content">
+          <video id="matting-video" controls muted loop playsinline height="100%">
+            <source src="./static/videos/video_reaching.mp4" type="video/mp4">
+          </video>
+          <p>Reach a cube outside workspace</p>
+        </div>
+        <div class="column content">
+          <video id="matting-video" controls muted loop playsinline height="100%">
+            <source src="./static/videos/video_holder.mp4" type="video/mp4">
+          </video>
+          <p>Hold a phone upright</p>
+        </div>
+        <div class="column content">
+          <video id="matting-video" controls muted loop playsinline height="100%">
+            <source src="./static/videos/video_lift.mp4" type="video/mp4">
+          </video>
+          <p>Lift a bowl</p>
+        </div>
+      </div>
+
+      <div class="columns is-centered">
+        <div class="column content">
+          <video id="matting-video" controls muted loop playsinline height="100%">
+            <source src="./static/videos/video_piggy.mp4" type="video/mp4">
+          </video>
+          <p>Lift a Piggy</p>
+        </div>
+        <div class="column content">
+          <video id="matting-video" controls muted loop playsinline height="100%">
+            <source src="./static/videos/video_calabash.mp4" type="video/mp4">
+          </video>
+          <p>Make a calabash shaped dough</p>
+        </div>
+        <div class="column content">
+          <video id="matting-video" controls muted loop playsinline height="100%">
+            <source src="./static/videos/video_flatten.mp4" type="video/mp4">
+          </video>
+          <p>Flatten the dough</p>
+        </div>
+      </div>
+
+      <div class="columns is-centered">
+        <div class="column content">
+          <video id="matting-video" controls muted loop playsinline height="100%">
+            <source src="./static/videos/video_cut.mp4" type="video/mp4">
+          </video>
+          <p>Cut the dough into two halves</p>
+        </div>
+        <div class="column content">
+          <video id="matting-video" controls muted loop playsinline height="100%">
+            <source src="./static/videos/video_transport.mp4" type="video/mp4">
+          </video>
+          <p>Transport water</p>
+        </div>
+        <div class="column content">
+          <video id="matting-video" controls muted loop playsinline height="100%">
+            <source src="./static/videos/video_waterfill.mp4" type="video/mp4">
+          </video>
+          <p>Pour water in a bottle</p>
+        </div>
+      </div>
+
+      <h2 class="subtitle has-text-centered">
+        4 rigid tasks and 5 fluid/soft-body tasks proposed in RobotSmith
+      </h2>
+    </div>
+  </div>
+</section>
+
+<!--/ Task Gallery. -->
+
+<!-- 4.Real-World Exp. -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="hero-body has-text-centered">
+      <h2 class="title is-3">Real-World Experiments</h2>
+      
+      <div class="columns is-centered">
+        <!-- Writing. -->
+        <div class="column">
+          <h2 class="title is-4">Make a calabash shaped dough(1x)</h2>
+          <div class="columns is-centered">
+            <div class="column content">
+              <video id="matting-video" autoplay controls muted loop playsinline height="100%">
+                <source src="./static/videos/DoughCalabash_Real2.mp4"
+                        type="video/mp4">
+              </video>
+              <p>
+              </p>
+            </div>
+
+          </div>
+        </div>
+        <!--/ Writing. -->
+        <!-- Scoop -->
+        <div class="column">
+          <div class="content">
+            <h2 class="title is-4">Fill a bottle with water(1x)</h2>
+            <video id="dollyzoom" autoplay controls muted loop playsinline height="100%">
+              <source src="./static/videos/FillABottle_Real2.mp4"
+                      type="video/mp4">
+            </video>
+            <p>
+            </p>
+          </div>
+        </div>
+        <!--/ Scoop -->
+      </div>
+      
+      <div class="columns is-centered">
+        <!-- Writing. -->
+        <div class="column">
+          <h2 class="title is-4">Hold a phone upright(1x)</h2>
+          <div class="columns is-centered">
+            <div class="column content">
+              <video id="matting-video" autoplay controls muted loop playsinline height="100%">
+                <source src="./static/videos/HoldAPhone_Real2.mp4"
+                        type="video/mp4">
+              </video>
+              <p>
+              </p>
+            </div>
+
+          </div>
+        </div>
+        <!--/ Writing. -->
+        <!-- Scoop -->
+        <div class="column">
+          <div class="content">
+            <h2 class="title is-4">Make a pancake(16x)</h2>
+            <video id="dollyzoom" autoplay controls muted loop playsinline height="100%">
+              <source src="./static/videos/Pancake_Real.mp4"
+                      type="video/mp4">
+            </video>
+            <p>
+            </p>
+          </div>
+        </div>
+        <!--/ Scoop -->
+      </div>
+      <h2 class="subtitle has-text-centered">
+        Real world demo of 1 rigid task, 1 fluid task, 1 soft-body task and the long-horizon task.<br>
+      </h2>
+    </div>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link" href="https://github.com/UBSoft24" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            Website built upon 
+            <a
+              href="https://github.com/nerfies/nerfies.github.io">Nerfies'
+            </a> 
+            open-source template
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="./main.js"></script>
+</body>
+</html>
