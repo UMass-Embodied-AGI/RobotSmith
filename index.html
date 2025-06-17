@@ -43,17 +43,7 @@
   <script src="static/js/bulma-carousel.min.js"></script>
   <script src="static/js/bulma-slider.min.js"></script>
   <script src="static/js/index.js"></script>
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.153.0/examples/jsm/"
-      }
-    }
-  </script>
 </head>
-
-
 <body>
 
 
@@ -66,41 +56,48 @@
             <div class="is-size-5 publication-authors">
               <!-- Paper authors -->
               <span class="author-block">
-                <a href="FIRST AUTHOR PERSONAL LINK" target="_blank">Chunru Lin</a><sup>*</sup>,</span>
+                <a href="https://chunru-lin.github.io/">Chunru Lin</a><sup>1</sup>*</span>,
               <span class="author-block">
-                <a href="SECOND AUTHOR PERSONAL LINK" target="_blank">Haotian Yuan</a><sup>*</sup>,</span>
+                <a href="https://github.com/dozingbear">Haotian Yuan</a><sup>1</sup>*</span>,
               <span class="author-block">
-                <a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Yian Wang</a><sup>*</sup>,</span>
+                <a href="https://wangyian-me.github.io/">Yian Wang</a><sup>1</sup>*</span>,
               </span>
               <span class="author-block">
-                <a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Xiaowen Qiu</a>,</span>
+                <a href="https://openreview.net/profile?id=%7EXiaowen_Qiu1">Xiaowen Qiu</a><sup>1</sup>,
               </span>
               <span class="author-block">
-                <a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Tsun-Hsuan Wang</a>,</span>
+                <a href="https://zswang666.github.io/">Tsun-Hsuan Wang</a><sup>2</sup>,
               </span>
               <span class="author-block">
-                <a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Minghao Guo</a>,</span>
+                <a href="https://www.minghaoguo.com/">Minghao Guo</a><sup>2</sup>,
               </span>
               <span class="author-block">
-                <a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Bohan Wang</a>,</span>
+                <a href="https://bohanwang123.com/">Bohan Wang</a><sup>3</sup>,
               </span>
               <span class="author-block">
-                <a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Yashraj Narang</a>,</span>
+                <a href="https://research.nvidia.com/person/yashraj-narang">Yashraj Narang</a><sup>4</sup>,
               </span>
               <span class="author-block">
-                <a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Dieter Fox</a>,</span>
+                <a href="https://homes.cs.washington.edu/~fox/">Dieter Fox</a><sup>4</sup>,
               </span>
               <span class="author-block">
-                <a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Chuang Gan</a>,</span>
+                <a href="https://people.csail.mit.edu/ganchuang/">Chuang Gan</a><sup>1,5</sup>
               </span>
             </div>
 
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>University of Massachusetts Amherst,</span>
+            <span class="author-block"><sup>2</sup>Massachusetts Institute of Technology,</span>
+            <span class="author-block"><sup>3</sup>National University of Singapore</span>
+            <span class="author-block"><sup>4</sup>NVIDIA</span>
+            <span class="author-block"><sup>5</sup>MIT-IBM Watson AI Lab</span>
+          </div>
 
             <div class="column has-text-centered">
               <div class="publication-links">
                 <!-- PDF Link. -->
                 <span class="link-block">
-                  <a href="https://robosmith1.github.io"
+                  <a href="https://chunru-lin.github.io/RobotSmith/static/pdfs/RobotSmith.pdf"
                      class="external-link button is-normal is-rounded is-dark">
                     <span class="icon">
                         <i class="fas fa-file-pdf"></i>
@@ -109,7 +106,7 @@
                   </a>
                 </span>
                 <span class="link-block">
-                  <a href="https://robosmith1.github.io"
+                  <a href="https://chunru-lin.github.io/RobotSmith/"
                      class="external-link button is-normal is-rounded is-dark">
                     <span class="icon">
                         <i class="ai ai-arxiv"></i>
@@ -118,7 +115,7 @@
                   </a>
                 </span>
                 <span class="link-block">
-                  <a href="https://robosmith1.github.io"
+                  <a href="https://chunru-lin.github.io/RobotSmith/"
                      class="external-link button is-normal is-rounded is-dark">
                     <span class="icon">
                         <i class="fab fa-github"></i>
@@ -140,8 +137,10 @@
 <section class="hero teaser">
   <div class="container is-max-desktop">
     <div class="hero-body">
-      <img src="./static/images/2.png" alt="替代文本" />
-    </div>
+      <video id="teaser" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/teaser.mp4" type="video/mp4">
+      </video>
+    </div>            
   </div>
 </section>
 <!--/ Teaser. -->
@@ -174,63 +173,6 @@
   </div>
 </section>
 
-<div class="container is-max-desktop">
-  <h2 class="title is-3 has-text-centered">Tool Generation Procedure</h2>
-
-  <div class="columns is-centered">
-    <!-- 左侧：Designer 模型展示 -->
-    <div class="column is-half">
-      <h3 class="title is-5 has-text-centered">Designer</h3>
-      <div id="obj-viewer-1" style="width: 100%; height: 400px;"></div>
-    </div>
-
-    <!-- 右侧：Critic 文本展示 -->
-    <div class="column is-half">
-      <h3 class="title is-5 has-text-centered">Critic</h3>
-      <div id="critic-text"
-           style="width: 100%; height: 400px; padding: 12px; font-size: 16px; background-color: #f5f5f5; border: 1px solid #ccc; overflow-y: auto;">
-        Placeholder for feedback or critic analysis...
-      </div>
-    </div>
-  </div>
-</div>
-
-<style>
-.step-selector {
-  display: flex;
-  justify-content: center;
-  margin-top: 2rem;
-}
-
-.step-selector button {
-  border-radius: 0;
-  border: 1px solid #3273dc;
-  background-color: white;
-  color: #3273dc;
-  padding: 0.75rem 1.5rem;
-  font-weight: bold;
-  transition: all 0.2s ease-in-out;
-}
-
-.step-selector button:first-child {
-  border-radius: 6px 0 0 6px;
-}
-.step-selector button:last-child {
-  border-radius: 0 6px 6px 0;
-}
-
-.step-selector button.active {
-  background-color: #3273dc;
-  color: white;
-}
-</style>
-
-<!-- Step selector -->
-<div class="step-selector">
-  <button onclick="selectStep(1)" id="step-btn-1" class="active">Step 1</button>
-  <button onclick="selectStep(2)" id="step-btn-2">Step 2</button>
-  <button onclick="selectStep(3)" id="step-btn-3">Step 3</button>
-</div>
 
 <!-- 3.Task Gallery. -->
 <section class="section">
@@ -302,9 +244,9 @@
         </div>
       </div>
 
-      <h2 class="subtitle has-text-centered">
-        4 rigid tasks and 5 fluid/soft-body tasks proposed in RobotSmith
-      </h2>
+      <!-- <h2 class="subtitle has-text-centered">
+        Proposed Tasks in RobotSmith
+      </h2> -->
     </div>
   </div>
 </section>
@@ -320,7 +262,7 @@
       <div class="columns is-centered">
         <!-- Writing. -->
         <div class="column">
-          <h2 class="title is-4">Make a calabash shaped dough(1x)</h2>
+          <h3 class="title is-4">Make a calabash shaped dough (1x)</h3>
           <div class="columns is-centered">
             <div class="column content">
               <video id="matting-video" autoplay controls muted loop playsinline height="100%">
@@ -337,7 +279,7 @@
         <!-- Scoop -->
         <div class="column">
           <div class="content">
-            <h2 class="title is-4">Fill a bottle with water(1x)</h2>
+            <h3 class="title is-4">Fill a bottle with water (1x)</h3>
             <video id="dollyzoom" autoplay controls muted loop playsinline height="100%">
               <source src="./static/videos/FillABottle_Real2.mp4"
                       type="video/mp4">
@@ -352,7 +294,7 @@
       <div class="columns is-centered">
         <!-- Writing. -->
         <div class="column">
-          <h2 class="title is-4">Hold a phone upright(1x)</h2>
+          <h3 class="title is-4">Hold a phone upright (1x)</h3>
           <div class="columns is-centered">
             <div class="column content">
               <video id="matting-video" autoplay controls muted loop playsinline height="100%">
@@ -369,7 +311,7 @@
         <!-- Scoop -->
         <div class="column">
           <div class="content">
-            <h2 class="title is-4">Make a pancake(16x)</h2>
+            <h3 class="title is-4">Make a pancake (16x)</h3>
             <video id="dollyzoom" autoplay controls muted loop playsinline height="100%">
               <source src="./static/videos/Pancake_Real.mp4"
                       type="video/mp4">
@@ -380,9 +322,9 @@
         </div>
         <!--/ Scoop -->
       </div>
-      <h2 class="subtitle has-text-centered">
+      <!-- <h2 class="subtitle has-text-centered">
         Real world demo of 1 rigid task, 1 fluid task, 1 soft-body task and the long-horizon task.<br>
-      </h2>
+      </h2> -->
     </div>
   </div>
 </section>
@@ -411,6 +353,5 @@
   </div>
 </footer>
 
-<script type="module" src="./main.js"></script>
 </body>
 </html>
