@@ -37,22 +37,30 @@ We propose RobotSmith, an automated pipeline that leverages the implicit physica
 
 ## Installation
 
+Clone the repository and change into the project directory.
+
 ```
 git clone --recursive https://github.com/chunru-lin/RobotSmith.git
 cd RobotSmith
 ```
 
-Actually not from Genesis repo, edit later.
+Create a new Conda environment with Python 3.9 and activate it.
 
 ```
-conda create -n roto python=3.9
+conda create -n robotsmith python=3.9
+conda activate robotsmith
+```
 
+Install the necessary libraries for the project to run, including the CUDA toolkit, PyTorch, and other Python packages.
+
+```
 conda install nvidia/label/cuda-11.8.0::cuda-toolkit
 export CUDA_HOME=/home/xhrlyb/Apps/anaconda3/pkgs/cuda-toolkit-11.8.0-0
 
 cd ext/Genesis/
 pip install -e .
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+pip install open-clip-torch
 
 wget https://github.com/ompl/ompl/releases/download/prerelease/ompl-1.6.0-cp39-cp39-manylinux_2_28_x86_64.whl
 pip install ompl-1.6.0-cp39-cp39-manylinux_2_28_x86_64.whl
@@ -61,9 +69,6 @@ rm ompl-1.6.0-cp39-cp39-manylinux_2_28_x86_64.whl
 
 (Optional) Install [surface reconstruction](https://genesis-world.readthedocs.io/en/latest/user_guide/overview/installation.html#optional-motion-planning) and [raytracing renderer](https://genesis-world.readthedocs.io/en/latest/user_guide/overview/installation.html#optional-ray-tracing-renderer) following Genesis installation document for better visual quality.
 
-```
-pip install open-clip-torch
-```
 
 ## User Guide
 
