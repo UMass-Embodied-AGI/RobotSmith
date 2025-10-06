@@ -1,0 +1,11 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 14.03.2020 23:40:05
+
+newmtl wire_000000000
+Ka 0.200000 0.200000 0.200000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Tr 0.000000
+illum 2
+Ns 0.000000
+map_Kd carpet_fine.jpg

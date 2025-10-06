@@ -1,0 +1,13 @@
+Now you have a robotic task: 
+
+On the table, there is a robot arm with a parallel gripper, $3D_OBJECT_DESCRIPTION$. The task goal is to $GOAL_DESCRIPTION$. For more detailed scene setup, here is a code:
+
+$3D_CONFIGURATION$
+
+You have already designed a tool for the task. The detailed shape and placement info can be reffered to chat history. Now you need to provide a robotic manipulation trajectory using the following 3 APIs:
+
+```python
+adjust_gripper_pose(pos, quat) # move the gripper to target pose
+grasp(obj, grasp_quat) # auto calculate a grasping pose to steadily grasp obj up while keep the given grasp_quat
+release() # open the gripper to the widest
+```

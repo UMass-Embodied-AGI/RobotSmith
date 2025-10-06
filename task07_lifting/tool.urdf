@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<robot name="u_tool">
+  <!-- Bottom box -->
+  <link name="bottom_link">
+    <inertial>
+      <origin xyz="0.249 0 0" rpy="0 0 0"/>
+      <mass value="6.921"/>
+      <inertia
+        ixx="0.00216"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="0.1446"
+        iyz="0.0"
+        izz="0.1446"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.249 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.498 0.05 0.05"/>
+      </geometry>
+      <material name="green">
+        <color rgba="0 1 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.249 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.498 0.05 0.05"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- Vertical box -->
+  <link name="vertical_link">
+    <inertial>
+      <origin xyz="0 0 0.249" rpy="0 0 0"/>
+      <mass value="6.921"/>
+      <inertia
+        ixx="0.1446"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="0.1446"
+        iyz="0.0"
+        izz="0.00216"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0.249" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.05 0.05 0.498"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.249" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.05 0.05 0.498"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint_bottom_to_vertical" type="fixed">
+    <parent link="bottom_link"/>
+    <child link="vertical_link"/>
+    <origin xyz="0.498 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Top box -->
+  <link name="top_link">
+    <inertial>
+      <origin xyz="-0.249 0 0" rpy="0 0 0"/>
+      <mass value="6.921"/>
+      <inertia
+        ixx="0.00288"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="0.1456"
+        iyz="0.0"
+        izz="0.1456"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.249 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.498 0.05 0.05"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.249 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.498 0.05 0.05"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint_vertical_to_top" type="fixed">
+    <parent link="vertical_link"/>
+    <child link="top_link"/>
+    <origin xyz="0 0 0.498" rpy="0 0 0"/>
+  </joint>
+</robot>

@@ -1,0 +1,289 @@
+import os
+import re
+import ast
+import json
+import numpy as np
+from scipy.spatial.transform import Rotation as R
+
+def write_code(file_id, code_file, tool_file, load_tool_file, plan_file, template_file='cmaes_tool_multiprocess.py'):
+    with open(template_file, 'r') as fi:
+        template_lines = fi.readlines()
+    outp = ''
+
+    # before tool loading
+    line_id = 0
+    for line in template_lines:
+        line_id += 1        
+        outp += line
+        if ') # dough' in line:
+            break
+    
+    # skip tool loading
+    while True:
+        line_id += 1
+        if ') # tool' in template_lines[line_id-1]:
+            break
+
+    # tool loading 
+    load_tool_prog = json.load(open(load_tool_file, 'r'))['placement_func']
+    _, p1, p2, p3 = re.findall(r"(pos)\s*=\s*\(\s*([-+]?\d*\.?\d+)\s*,\s*([-+]?\d*\.?\d+)\s*,\s*([-+]?\d*\.?\d+)\s*\)", load_tool_prog)[0]
+    _, e1, e2, e3 = re.findall(r"(euler)\s*=\s*\(\s*([-+]?\d*\.?\d+)\s*,\s*([-+]?\d*\.?\d+)\s*,\s*([-+]?\d*\.?\d+)\s*\)", load_tool_prog)[0]
+    _, s1, s2, s3 = re.findall(r"(scale)\s*=\s*\(\s*([-+]?\d*\.?\d+)\s*,\s*([-+]?\d*\.?\d+)\s*,\s*([-+]?\d*\.?\d+)\s*\)", load_tool_prog)[0]
+    outp += f"""
+    tool = scene.add_entity(
+        morph = gs.morphs.Mesh(
+            file=\"{{}}/task08_cutting_tools/{file_id}.obj\".format(project_path),
+            scale=({s1}, {s2}, {s3}),
+            pos=({p1}, {p2}, {p3}),
+            euler=({e1}, {e2}, {e3}),
+            fixed=False,
+            collision=True,
+            decompose_nonconvex=False,
+            convexify=False,
+            decimate=False,
+        ),
+        surface=gs.surfaces.Default(
+            color    = (0.1, 0.1, 0.1),
+        ),  
+    ) # tool
+"""
+
+    template_lines = template_lines[line_id:]
+    line_id = 0
+    # before evaluate
+    for line in template_lines:
+        line_id += 1
+        if 'def evaluate' in line:
+            break
+        outp += line
+
+    # skip evaluate
+    while True:
+        line_id += 1
+        if '# ) evaluate' in template_lines[line_id-1]:
+            break
+    
+    # evaluate
+    with open(plan_file, 'r') as f:
+        raw_content = f.read()
+    raw_content = raw_content.strip()
+    if raw_content.startswith('```python') and raw_content.endswith('```'):
+        raw_content = re.sub(r'^```python\s*', '', raw_content)
+        raw_content = re.sub(r'```$', '', raw_content)
+        raw_content = raw_content.strip()
+    if raw_content.startswith('{') or raw_content.startswith('['):
+        try:
+            json_obj = json.loads(raw_content)
+            if isinstance(json_obj, dict):
+                code = list(json_obj.values())[0]
+            elif isinstance(json_obj, str):
+                code = json_obj
+            else:
+                raise ValueError("Unrecognized JSON structure for plan.txt")
+        except json.JSONDecodeError:
+            raise ValueError("Invalid JSON format in plan.txt")
+    else:
+        code = raw_content
+    # print(code)
+    tree = ast.parse(code)
+    func_node = None
+    for node in tree.body:
+        if isinstance(node, ast.FunctionDef):
+            func_node = node
+            break
+    if func_node is None:
+        raise ValueError("No execute_trajectory() function found.")
+    found_grasp, found_grasp_ever = False, False
+    adjust_calls = []
+    for stmt in func_node.body:
+        if isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Call):
+            call = stmt.value
+            func_name = getattr(call.func, 'id', None)
+            if func_name is None and isinstance(call.func, ast.Attribute):
+                func_name = call.func.attr
+            if func_name == 'grasp':
+                # print(ast.unparse(stmt))
+                obj_arg = None
+                if call.args:
+                    obj_arg = call.args[0]
+                else:
+                    obj_kw = next((kw for kw in call.keywords if kw.arg == 'obj'), None)
+                    if obj_kw:
+                        obj_arg = obj_kw.value
+                # print(obj_arg   )
+                if obj_arg is None:
+                    raise ValueError("grasp() must have an object argument, either positional or obj= keyword!")
+                if isinstance(obj_arg, ast.Attribute):
+                    if 'tool' not in obj_arg.attr:
+                        raise ValueError("grasp() must be called with self.tool or 'tool'! attr")
+                elif isinstance(obj_arg, ast.Constant):
+                    if 'tool' not in obj_arg.value:
+                        raise ValueError("grasp() must be called with self.tool or 'tool'! const")
+                elif isinstance(obj_arg, ast.Name):
+                    if 'tool' not in obj_arg.id:
+                        raise ValueError("grasp() must be called with self.tool or 'tool'! name")
+                else:
+                    raise ValueError("grasp() must be called with self.tool or 'tool'!  else")
+                found_grasp = True
+                found_grasp_ever = True
+            elif func_name == 'release':
+                found_grasp = False
+            elif func_name == 'adjust_gripper_pose':
+                if found_grasp:
+                    adjust_calls.append(call)
+    if not found_grasp_ever:
+        raise ValueError("No grasp(self.tool) found!")
+    poses = []
+    quats = []
+    assignments = {}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Name):
+            var_name = node.targets[0].id
+            value = node.value
+            assignments[var_name] = value
+    for call in adjust_calls:
+        args = {kw.arg: kw.value for kw in call.keywords} if call.keywords else {}
+        if args:
+            pos_arg = args.get('pos', call.args[0] if call.args else None)
+            quat_arg = args.get('quat', call.args[1] if len(call.args) > 1 else None)
+        else:
+            pos_arg = call.args[0]
+            quat_arg = call.args[1]
+
+        if isinstance(pos_arg, ast.Name) and pos_arg.id in assignments:
+            pos_arg = assignments[pos_arg.id]
+        if isinstance(quat_arg, ast.Name) and quat_arg.id in assignments:
+            quat_arg = assignments[quat_arg.id]
+
+        if not (isinstance(pos_arg, ast.Tuple) and isinstance(quat_arg, ast.Tuple)):
+            raise ValueError("adjust_gripper_pose arguments must be tuples, variables assigned to tuples, or keyword arguments.")
+
+        pos = tuple(ast.literal_eval(elt) for elt in pos_arg.elts)
+        quat = tuple(ast.literal_eval(elt) for elt in quat_arg.elts)
+
+        poses.append(pos)
+        quats.append(quat)
+
+    # print(code)
+
+    # print("adjust_calls:", ast.unparse(adjust_calls))
+
+    # print("poses:", poses)
+
+    # print("quats:", quats)
+
+    unique_quats = []
+    unique_eulers = []
+    quat_indices = []
+    for quat in quats:
+        if quat not in unique_quats:
+            if abs(quat[0]) > 0.9:
+                euler = R.from_quat([quat[1], quat[2], quat[3], quat[0]]).as_euler('xyz', degrees=True)
+            else:
+                euler = R.from_quat([quat[0], quat[1], quat[2], quat[3]]).as_euler('xyz', degrees=True)
+            unique_quats.append(quat)
+            unique_eulers.append(tuple(euler))
+        quat_indices.append(unique_quats.index(quat))
+    
+    # print("unique_quats:", unique_quats)
+
+    # print("quat_indices:", quat_indices)
+
+    x_init = []
+    for uq in unique_eulers:
+        x_init.extend(list(uq))
+    for pos in poses:
+        x_init.extend(list(pos))
+
+    # print("x_init:", x_init)
+
+    lines = []
+    lines.append(f"    def evaluate(x, cur_iter, vis, img_steps, img_save_dir):")
+    lines.append(f"        x = np.array(x).reshape(({len(unique_quats) + len(poses)}, 3))")
+    lines.append("        scene.reset()")
+    lines.append("")
+    lines.append("        tool_quats = x[:{}]".format(len(unique_quats)))
+    lines.append("        tool_poses = x[{}:]".format(len(unique_quats)))
+    lines.append("")
+    for i, idx in enumerate(quat_indices):
+        lines.append("        control_tool(tool, tool_poses[{}], tool_quats[{}])".format(i, idx))
+    lines.append("")
+    lines.append("        dough_particles = dough.get_particles()")
+    lines.append("        from sklearn.cluster import KMeans")
+    lines.append("        kmeans = KMeans(n_clusters=2, random_state=0).fit(dough_particles)")
+    lines.append("        labels = kmeans.labels_")
+    lines.append("        cluster_0 = dough_particles[labels == 0]")
+    lines.append("        mid_0 = np.mean(cluster_0, axis=0)")
+    lines.append("        cluster_1 = dough_particles[labels == 1]")
+    lines.append("        mid_1 = np.mean(cluster_1, axis=0)")
+    lines.append("        penalty = -np.linalg.norm(mid_0 - mid_1)")
+    lines.append("")
+    lines.append("        return penalty, 0")
+    for line in lines:
+        outp += line + "\n"
+
+
+    n_envs = 15
+    project_path = '/scratch3/workspace/haotianyuan_umass_edu-shared/FuncAny'
+
+    # n_envs = 3
+    # project_path = '/home/xhrlyb/Projects/FuncAny'
+
+    # after evaluate
+    template_lines = template_lines[line_id:]
+    line_id = 0
+    for line in template_lines:
+        line_id += 1
+        if 'dim, ' in line:
+            outp += f'    dim, rng, sigma, iters = {len(unique_quats) + len(poses)}, 0.1, 0.02, 50\n'
+        elif 'init_params = [' in line:
+            outp += f'    init_params = np.array({x_init}).flatten()\n'
+        elif 'init_params = np' in line:
+            pass
+        elif 'project_path = ' in line:
+            outp += f'    project_path = \'{project_path}\'\n'
+        elif 'n_envs = ' in line:
+            outp += f'    n_envs = {n_envs}\n'
+        elif 'opt_log' in line:
+            line = line.replace('opt_log', f'opt_log{file_id}')
+            outp += line
+            outp += f'    open(os.path.join(img_save_dir, \"{file_id}.txt\"), \"w\").write(\"{file_id}\")\n'
+        elif 'best_traj.npy' in line:
+            line = line.replace('best_traj.npy', f'best_traj{file_id}.npy')
+            outp += line
+        elif 'best_score.txt' in line:
+            line = line.replace('best_score.txt', f'best_score{file_id}.txt')
+            outp += line
+        elif 'cmaes_ckpt.pkl' in line:
+            line = line.replace('cmaes_ckpt.pkl', f'cmaes_ckpt{file_id}.pkl')
+            outp += line
+        elif 'plot.png' in line:
+            line = line.replace('plot.png', f'plot{file_id}.png')
+            outp += line
+        else:
+            outp += line
+        
+
+    with open(code_file, 'w') as fo:
+        fo.write(outp)
+
+
+
+
+project_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__, '..')))
+
+prefix = project_path + "/task08_cutting_tools/"
+
+for i in range(10):
+    code_file = prefix + f"cmaes_tool_multiprocess{i}.py"
+    tool_file = prefix + f"{i}.obj"
+    load_tool_file = prefix + f"design{i}.json"
+    plan_file = prefix + f"plan{i}.txt"
+    template_file = project_path + "/task08_cutting/cmaes_tool_multiprocess.py"
+    try:
+        write_code(i, code_file, tool_file, load_tool_file, plan_file, template_file)
+    except Exception as e:
+        print(f"Error in file {i}: {e}")
+        continue
+    
+

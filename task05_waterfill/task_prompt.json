@@ -1,0 +1,7 @@
+{
+    "3D_OBJECT_DESCRIPTION": "a cup of water and a small-necked bottle (neck radius is round 0.1)",
+    "GOAL_DESCRIPTION": "pour the water into the bottle and avoid sprinkling",
+    "3D_CONFIGURATION":
+    "self.bottle = self.scene.add_entity(morph=gs.morphs.Mesh(filename='bottle.obj', pos=(0.143, 0.5, 0.156), euler=(90, 0, 0)))\nself.cup = self.scene.add_entity(morph=gs.morphs.Mesh(filename='cup.obj', pos=(0, 0.3, 0.064), euler=(90, 0, 0)))",
+    "TIPS_FOR_DESIGNER": ""
+}

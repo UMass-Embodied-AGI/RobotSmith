@@ -1,0 +1,205 @@
+Now you have a robotic task: 
+
+On the table, there is a robot arm with a parallel gripper, $3D_OBJECT_DESCRIPTION$. The task goal is to $GOAL_DESCRIPTION$. For more detailed scene setup, here is a code:
+
+$3D_CONFIGURATION$
+
+You need to design a tool to help finish the task. 
+
+You have 2 APIs to generate 3D meshes: 
+
+    def primitive(primitive_name, primitive_scale)
+        """
+        Create a 3D primitive mesh, centered at the origin.
+        Args:
+            primitive_name (str): One of {'cube', 'ball', 'cylinder', 'ring', 'tube'}.
+            primitive_scale (list of float):
+                - If cube, [sx, sy, sz]
+                - If ball, [radius]
+                - If cylinder, [radius, height]
+                - If ring, [radius, thickness]
+                - If tube, [radius, length, thickness]
+        Returns:
+            trimesh.Trimesh: The resulting mesh, centered at (0, 0, 0).
+        """
+    
+    def generate_3d(name):
+        """
+        Call a pretrained text-to-3D model to generate a single solid 3D object.
+        Args:
+            name (str): the text prompt to generate 3D shape. Should be very simple, like several words.
+        Returns:
+            trimesh.Trimesh: The resulting mesh, at a random position and of a random size.
+        Tips:
+            Remember to rescale and align the generated mesh, since the size and position would be random.
+        """
+
+You have several APIs for 3D editing:
+
+    def rotate_to_align(mesh1):
+        """
+        Rotate and translate the mesh so that:
+        - Its bounding box is centered at the origin (0,0,0).
+        - The largest dimension of the bounding box aligns with +X,
+        - The second-largest aligns with +Y,
+        - The smallest aligns with +Z.
+        The mesh remains axis-aligned and is returned in-place.
+        Args:
+            mesh (trimesh.Trimesh): The input mesh (modified in-place).
+        Returns:
+            trimesh.Trimesh: The rotated+translated mesh, for convenience.
+        """
+
+    def get_position(mesh):
+        """
+        Return the position of the mesh as (x, y, z).
+        Args:
+            mesh (trimesh.Trimesh): The mesh.
+        Returns:
+            tuple: (x, y, z)
+        """
+
+    def get_axis_align_bounding_box(mesh):
+        """
+        Return the axis-aligned bounding box of the mesh as (min_x, min_y, min_z, max_x, max_y, max_z).
+        Args:
+            mesh (trimesh.Trimesh): The mesh.
+        Returns:
+            tuple: (min_x, min_y, min_z, max_x, max_y, max_z)
+        """
+        
+    def get_volume(mesh):
+        """
+        Return the volume of the mesh in cubic units.
+        Args:
+            mesh (trimesh.Trimesh): A closed, manifold mesh.
+        Returns:
+            float: The volume of the mesh.
+        """
+        
+    def rescale(mesh, ratio):
+        """
+        Uniformly scale the mesh by the given ratio about the origin (0, 0, 0).
+        Args:
+            mesh (trimesh.Trimesh): The mesh to scale (modified in-place).
+            ratio (float): The scale factor to apply.
+        Returns:
+            trimesh.Trimesh: The scaled mesh (for convenience).
+        """
+        
+    def move(mesh, offset):
+        """
+        Translate the mesh by the given offset (x, y, z).
+        Args:
+            mesh (trimesh.Trimesh): The mesh to move in-place.
+            offset (tuple or list of float): The translation offset (dx, dy, dz).
+        Returns:
+            trimesh.Trimesh: The transformed mesh (for convenience).
+        """
+        
+    def empty_grid():
+        """
+        Create an empty 256x256x256 boolean occupancy grid from -0.5 to +0.5 in each axis.
+        Returns:
+            dict: A dictionary containing:
+                - 'data': np.ndarray of shape (256, 256, 256), dtype=bool (all False initially).
+                - 'res':  integer (256).
+                - 'min_bound': np.array([-0.5, -0.5, -0.5]).
+                - 'max_bound': np.array([0.5, 0.5, 0.5]).
+        """
+        
+    def add_mesh(grid, mesh):
+        """
+        Convert 'mesh' into a volume of occupied voxels using an SDF (signed-distance) test,
+        then mark those voxels as True in 'grid'.
+        Args:
+            grid (dict): The grid dictionary from empty_grid().
+            mesh (trimesh.Trimesh): A triangular mesh (assumed to fit in [-0.5, 0.5]^3).
+        Returns:
+            dict: The updated grid, same reference as input.
+        """
+        
+    def sub_mesh(grid, mesh):
+        """
+        Convert 'mesh' into a volume using an SDF, then set those voxels to False
+        (subtract from the grid).
+        """
+        
+    def cut_grid(grid):
+        """
+        Return two new grids of the same resolution (256x256x256):
+        - grid_bottom: occupies only z < 0
+        - grid_up: occupies only z >= 0
+        by zeroing out the complementary region in each grid.
+        Each returned grid has:
+        - 'data': a (256,256,256) boolean array
+        - same 'min_bound' and 'max_bound' as the original
+        - same 'res' as the original
+        Args:
+            grid (dict): Must have keys 'data', 'res', 'min_bound', 'max_bound'.
+                'data' is a 3D boolean array: (256,256,256).
+        Returns:
+            (dict, dict): (grid_up, grid_bottom)
+        """   
+    
+    def grid_to_mesh(grid, do_simplify=True, target_num_faces=3000):
+        """
+        Convert a 3D occupancy grid into a surface mesh using Marching Cubes.
+        Optionally simplify the mesh using Open3D's quadric decimation.
+        Args:
+            grid (dict): A dictionary with keys:
+                - 'data': (256,256,256) boolean array (True = occupied).
+                - 'res': int, resolution (e.g. 256).
+                - 'min_bound': np.array([x_min, y_min, z_min]).
+                - 'max_bound': np.array([x_max, y_max, z_max]).
+            do_simplify (bool): Whether to perform mesh simplification (default True).
+            target_num_faces (int): If simplifying, the target number of faces.
+        Returns:
+            trimesh.Trimesh: The extracted (and optionally simplified) mesh. 
+                If the grid is empty or no surface is found, faces might be empty.
+        """
+
+To describe a generated tool, you will use a json format. Here is an example:
+```json
+{
+    "name": a string,
+    "parts": [
+        {
+            "geom": one in ['cube', 'ball', 'cylinder', 'ring', 'tube', 'mesh'],
+            "prompt": if "geom" is 'mesh', there is a string representing a text prompt for text-to-3d generation model; otherwise is an empty string,
+            "parameters": if "geom" is 'mesh', the parameters are (lx, ly, lz), the length in x/y/z directions; 
+                        if not, the parameters should be the same as `primitive_scale` in primitive().
+            "is_graspable": True/False, if it is True, then robot arm can grasp this part, otherwise the robot arm cannot grasp.
+        },
+        {
+            ...
+        },
+    ],
+    "assemble_func": a complete python code to assemble all the parts above into the whole tool using 3D editing APIs provided.
+        """
+            def assemble(parts: list[dict]):
+                ...
+                # the input parameter parts here is a list of dictionaries, you need to call primitive() or generate_3d() manually with parameters in parts.
+                # in the function, the above 3D editing APIs are used to assemble each part into the whole tool.
+                # the function should export 3D assets of the tool into one or more obj files, each asset should be on the x-y plane.
+                # the function returns a list of file names of the exported 3D assets.
+        """ 
+    "placement_func": a complete python code to place the tool in the scene.
+        """
+            def placement():
+                self.tool = scene.add_entity(
+                    gs.Morph.Mesh(
+                        filename="tool.obj",
+                        pos=(0.0,0.0,0.0),
+                        euler=(0,0,0),
+                        scale=(1,1,1),
+                    )
+                )
+                # the filename here should match that saved in assemble_func, and the position, rotation and scale should be approprate to be here.
+        """
+}
+```
+
+You should make sure:
+The tool is saved. All the 3D editing functions in assembly func have return values, which should be received.
+$TIPS_FOR_DESIGNER$

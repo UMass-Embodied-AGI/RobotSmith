@@ -1,0 +1,7 @@
+{
+    "3D_OBJECT_DESCRIPTION": "and a cube out of robot arm's reachability",
+    "GOAL_DESCRIPTION": "move the cube to a target position `self.target_pos` within the robot arm's reachability",
+    "3D_CONFIGURATION": 
+    "self.item = self.scene.add_entity(morph=gs.morphs.Box(size=(0.1, 0.1, 0.1), pos=(0.4, 0.7, 0.05)))",
+    "TIPS_FOR_DESIGNER": ""
+}

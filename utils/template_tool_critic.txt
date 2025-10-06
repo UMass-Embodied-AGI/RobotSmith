@@ -1,0 +1,11 @@
+Now you have a robotic task: 
+
+On the table, there is a robot arm with a parallel gripper, $3D_OBJECT_DESCRIPTION$. The task goal is to $GOAL_DESCRIPTION$. For a more detailed scene setup, here is a code:
+
+$3D_CONFIGURATION$
+
+Here are the multi-view figures of a tool designed for the task. Does that look good? If so, reply DONE; if not, give modification suggestions.
+
+Here are some important aspects for you to examine if the tool looks good:
+1. A good tool should be easy to grasp.
+2. A good tool should be in good shape, and each part looks connected.

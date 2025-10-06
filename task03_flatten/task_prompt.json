@@ -1,0 +1,7 @@
+{
+    "3D_OBJECT_DESCRIPTION": "and a cubic dough",
+    "GOAL_DESCRIPTION": "flatten the dough with a height smaller than 0.03",
+    "3D_CONFIGURATION":
+    "self.dough = self.scene.add_entity(morph=gs.morphs.Box(upper=(0.38, 0.035, 0.075), lower=(0.32, -0.035, 0.005)))",
+    "TIPS_FOR_DESIGNER": ""
+}

@@ -1,0 +1,15 @@
+Now you have a robotic task: 
+
+On the table, there is a robot arm with a parallel gripper, $3D_OBJECT_DESCRIPTION$. The task goal is to $GOAL_DESCRIPTION$. You have a tool designed for the task. For more detailed scene setup, here is the scene setup code and a rendered image:
+
+$3D_CONFIGURATION$
+
+Now you need to provide a robotic manipulation trajectory using the following 3 APIs:
+
+```python
+adjust_gripper_pose(pos, quat) # move the gripper to target pose
+grasp(obj, grasp_quat) # auto calculate a grasping pose to steadily grasp obj up while keep the given grasp_quat
+release() # open the gripper to the widest
+```
+
+Please write a manipulate() function with the 3 APIs provided above. Note you can only move tools or rigid objects in the scene.

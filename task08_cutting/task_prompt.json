@@ -1,0 +1,7 @@
+{
+    "3D_OBJECT_DESCRIPTION": "a dough",
+    "GOAL_DESCRIPTION": "cut the dough into two parts and keep the two parts with a distance more than 0.2",
+    "3D_CONFIGURATION":
+    "self.dough = self.scene.add_entity(morph=gs.morphs.Box(upper=(0.42, 0.015, 0.03), lower=(0.30, -0.015, 0.00)))",
+    "TIPS_FOR_DESIGNER": ""
+}
